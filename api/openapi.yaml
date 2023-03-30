@@ -1,0 +1,311 @@
+openapi: 3.0.0
+info:
+  title: Lernkarten
+  description: "Die Lernkarten App ermöglicht das userabhängige Lernen\
+  \ von eigen erstellten Lernkarten. Ein User besteht aus einem Name,\
+  \ einem Alter und einer Anzeigefarbe. Die Lernkarten haben eine Frage,\
+  \ eine Antwort und eine Hintergrundfarbe. Die App basiert auf einem\
+  \ REST-Service, welcher das Erstellen, Bearbeiten und Löschen von \
+  \ Lernkarten und Usern ermöglicht."
+  
+servers:
+- url: http://localhost:3000
+paths:
+  /user:
+    get:
+      summary: Alle Nutzer
+      description: Gibt alle Nutzer zurück
+      operationId: get-users
+      responses:
+        "200":
+          description: OK
+          conent:
+            application/json:
+              schema: array
+              items:
+                $ref: '#/components/schemas/User'
+              x-content-type: application/json
+    post:
+      summary: Erstelle Nutzer
+      description: Erstelle einen neuen Nutzer. Speichert neuen Nutzer in der Datenbank
+      operationId: create-user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        responses:
+          "201":
+            description: Created
+            headers:
+              Location:
+                shema:
+                  type: string
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schema/User'
+    put:
+      summary: User aktualiseren
+      description: Aktualisiert einen vorhandenen User
+      operation-id: update-user
+      requestBody:
+        content:
+          application/json:
+            $ref: '#/components/schemas/User'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schema/User'
+  /user/{id}:
+    get:
+      summary: Einzelnen User anfordern
+      description: Gibt einzelnen User anhand seine eindeutigen ID zurück
+      operation-id: get-user
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "404":
+          description: Not Found
+    delete:
+      summary: User löschen
+      description: Der User wird vom Server gelöscht
+      operationId: delete-user
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Not Found
+
+  /cards:
+    get:
+      summary: Alle Lernkarten
+      description: Gibt alle Lernkarten zurück
+      operationId: get-cards
+      responses:
+        "200":
+          description: OK
+          conent:
+            application/json:
+              schema: array
+              items:
+                $ref: '#/components/schemas/Card'
+              x-content-type: application/json
+    post:
+      summary: Erstelle Lernkarte
+      description: Erstelle einen neue Lernkarte. Speichert eine neue Lernkarte in der Datenbank
+      operationId: create-card
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card'
+        responses:
+          "201":
+            description: Created
+            headers:
+              Location:
+                shema:
+                  type: string
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Card'
+    put:
+      summary: Lernkarte aktualiseren
+      description: Aktualisiert eine vorhandene Lernkarte 
+      operation-id: update-card
+      requestBody:
+        content:
+          application/json:
+            $ref: '#/components/schemas/Card'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+  /cards/{id}:
+    get:
+      summary: Einzelne Lernkarte anfordern
+      description: Gibt einzelne Lernkarte anhand der eindeutigen ID zurück
+      operation-id: get-card
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        "404":
+          description: Not Found
+    delete:
+      summary: Lernkarte löschen
+      description: Die Lernkarte wird vom Server gelöscht
+      operationId: delete-card
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Not Found
+  /cards/solve:
+    summary: Löse eine Lernlarte
+    description: Nutzer gibt eine Lösung für eine Lernkarte ab
+    operationId: solve-card
+    requestBody:
+      content:
+        application/json:
+          cardId:
+            type: string
+          userID:
+            type: string
+          answerKind:
+            type: string
+            pattern: "solved|tentative|unsolved"
+    responses:
+      "200":
+        description: OK
+      "404":
+        description: Not Found
+  /cards/nextForUser/{id}:
+    get:
+      summary: Nächste Lernkarte für User
+      description: Gibt eine ungelöste oder vorläufige Lernkarte für einen Nutzer zurück
+      operaionId: get-next-card-for-user
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+    
+
+
+components:
+  schemas:
+    HATEOAS_Response:
+      title: Antworten im HATEOAS Format 
+      type: object
+      properties:
+        read_all:
+          $ref: '#/components/schemas/HATEOAS_Link'
+        read:
+          $ref: '#/components/schemas/HATEOAS_Link'
+        update:
+          $ref: '#/components/schemas/HATEOAS_Link'
+        delete:
+          $ref: '#/components/schemas/HATEOAS_Link'
+
+    HATEOAS_Link:
+      title: HATEOAS-Link
+      type: object
+      properties:
+        url:
+          type: string
+        method:
+          type: string
+
+    User:
+      title: User
+      type: object
+      properties:
+        _links:
+          $ref: '#/components/schemas/HATEOAS_Response'
+        _id:
+          type: string
+        name:
+          type: string
+        age:
+          type: number
+        color: 
+          type: string
+          pattern: "(#[1-9abcdef]{6})?"
+      required:
+        - name
+        - age
+      example:
+        _id: "8o739r834u3473983n345"
+        name: "Max Mustermann"
+        age: 21
+        color: "#ffffff"
+
+    Card:
+      title: Card
+      type: object
+      properties:
+        _links:
+          $ref: '#/components/schemas/HATEOAS_Response'
+        _id:
+          type: string
+        title:
+          type: string
+        answer:
+          type: number
+        color: 
+          type: string
+          pattern: "(#[1-9abcdef]{6})?"
+        user:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+      required:
+        - name
+        - age
+      example:
+        _id: "398039u34r830r93ß038r3ß4r83i"
+        title: "Hauptstadt Deutschland"
+        answer: "Berlin"
+        color: "#ffffff"
+        user: []
+  securitySchemes: {}

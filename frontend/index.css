@@ -1,0 +1,119 @@
+html{
+    height: 100%;
+    margin: 0;
+}
+
+body{
+    background-color: #364156;
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 15px;
+    color: white;
+}
+
+nav{
+    margin: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: #011638;
+    height: 50px;
+    font-size: xx-large;
+    border-radius: 10px;
+}
+
+nav > a {
+    cursor: pointer;
+    user-select: none;
+    color: white;
+}
+
+nav > a:visited{
+    text-decoration: none;
+    color: white;
+}
+
+nav > a:link{
+    color: white;
+    text-decoration: none;
+}
+
+.content{
+    text-align: center;
+    height: 100%;
+    background-color: #011638;
+    margin: 15px;
+    border-radius: 10px;
+}
+
+.list{
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.list-item{
+    text-decoration: none;
+    width: 500px;
+    border-radius: 15px;
+    cursor: pointer;
+    user-select: none;
+    color: black;
+    box-shadow: 4px 4px 5px black;
+    margin: 25px;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+form > .row{
+    text-align: left;
+    margin: 5px;
+    width: 20%;
+}
+
+form > .row > input{
+    width: 100%;
+}
+
+.learnCard{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.learnCard > div{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 25px;
+    width: 50%;
+    height: 25%;
+}
+
+.learnCard > .front{
+    color: black;
+    cursor: pointer;
+    user-select: none;
+}
+
+.learnCard > .back{
+    display: none;
+    color: white;
+    border: 1px solid white;
+}

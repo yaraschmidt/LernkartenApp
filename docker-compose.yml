@@ -1,0 +1,45 @@
+version: '3.0'
+services:
+  mongodb:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - dbdata:/data/db
+      - dbconfig:/data/configdb
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+        - 8081:8081
+    environment:
+        ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+        ME_CONFIG_MONGODB_ADMINPASSWORD: admin
+        ME_CONFIG_MONGODB_URL: mongodb://root:root@mongodb:27017/
+  
+  backend:
+    image: node:17-alpine
+    depends_on:
+      - mongodb
+    restart: always
+    environment:
+      MONGODB_CONNECTION_URL: mongodb://root:root@mongodb:27017/
+      MONGODB_DATABASE: application
+      MONGODB_COLLECTION_CARD: cards
+      MONGODB_COLLECTION_USER: user
+      MONGODB_COLLECTION_USER_CARDS: user_cards
+    ports:
+      - 3000:3000
+      - 9229:9229
+    volumes:
+        # - ./backend-1:/app
+        # - ./backend-2:/app
+        - ./backend-3:/app
+    working_dir: /app
+    command: sh -c "npm i; npm start"
+
+volumes:
+  dbdata:
+  dbconfig:  
