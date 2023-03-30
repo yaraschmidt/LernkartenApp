@@ -95,7 +95,7 @@ form > .row > input{
     align-items: center;
 }
 
-.learnCard > div{
+.learnCard > .card{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -105,6 +105,14 @@ form > .row > input{
     width: 50%;
     height: 25%;
 }
+
+.learnCard > .learnControls{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 25%;
+}
+
 
 .learnCard > .front{
     color: black;

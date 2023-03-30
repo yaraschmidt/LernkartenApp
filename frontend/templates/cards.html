@@ -1,4 +1,6 @@
-<a onclick="route('card/%CARDID%')" style="background-color: %COLOR%;" class="list-item">
+<a style="background-color: %COLOR%;" class="list-item">
     <p>Question: %QUESTION%</p>
     <p>Answer: %ANSWER%</p>
+    <button onclick="route('card/%CARDID%')">Edit</button>
+    <button onclick="deleteCard('%CARDID%')">Delete</button>
 </a>

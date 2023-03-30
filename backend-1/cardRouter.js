@@ -56,7 +56,9 @@ cardRouter.get("/nextForUser/:id", (req, res) => {
     if(!id) return res.sendStatus(400);
     collections.cardCollection.findOne({
         $or : [
-            { user : { $all : [ { "$elemMatch" : { userId : { $ne : new ObjectId(id) } } } ]} },
+            { user : { $all : [ { "$elemMatch" : { userId : { $ne : oid } } },
+                                { "$elemMatch" : { kind   : { $ne : 'solved'}} }
+        ]} },
             { user : { $eq : [] } }
         ]
     }).then(val => res.json(insertHateoasLinks(val)));

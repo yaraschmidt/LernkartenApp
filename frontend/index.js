@@ -2,6 +2,29 @@ let HTML_TEMPLATE = "";
 
 const backendAPI = "http://localhost:3000";
 
+function solveCard(cardId, userId, kind){
+    const body = {
+        "userId" : userId,
+        "cardId" : cardId,
+        "answerKind" : kind };
+
+    fetch(backendAPI + "/cards/solve",{
+        method: "POST",
+        headers : {
+            'Content-Type': 'application/json'
+        },
+        body : JSON.stringify(body)
+    })
+    .then(() => route("learn/" + userId));
+}
+
+function deleteCard(cardId){
+    fetch(backendAPI + "/cards/" + cardId,{
+        method: "DELETE"
+    })
+    .then(() => route('cards'));
+}
+
 function deleteUser(userId){
     fetch(backendAPI + "/user/" + userId,{
         method : "DELETE"
@@ -94,7 +117,6 @@ async function func(){
                     age : e.target.age.value,
                     color : e.target.color.value
                 };
-                console.log(body);
                 await fetch(backendAPI + "/user/", {
                     method : (isUpdate) ? 'PUT' : 'POST',
                     headers : {
@@ -209,6 +231,8 @@ async function func(){
                         HTML_TEMPLATE = HTML_TEMPLATE.replace(/%QUESTION%/g, card.question);
                         HTML_TEMPLATE = HTML_TEMPLATE.replace(/%ANSWER%/g, card.answer);
                         HTML_TEMPLATE = HTML_TEMPLATE.replace(/%COLOR%/g, card.color);
+                        HTML_TEMPLATE = HTML_TEMPLATE.replace(/%CARDID%/g, card._id);
+                        HTML_TEMPLATE = HTML_TEMPLATE.replace(/%USERID%/g, user._id);
     
                         contentDiv.innerHTML = HTML_TEMPLATE;
                         break;

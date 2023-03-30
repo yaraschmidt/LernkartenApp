@@ -1,10 +1,15 @@
 <div class="learnCard">
-    <div onclick="showBack()" style="background-color: %COLOR%;" class="front">
+    <div onclick="showBack()" style="background-color: %COLOR%;" class="front card">
         <p><strong>Question:</strong></p>
         <p>%QUESTION%</p>
     </div>
-    <div class="back">
+    <div class="back card">
         <p><strong>Answer:</strong></p>
         <p>%ANSWER%</p>
+    </div>
+    <div class="learnControls">
+        <button onclick="solveCard('%CARDID%', '%USERID%', 'solved')">Solved</button>
+        <button onclick="solveCard('%CARDID%', '%USERID%', 'partially')">Solved but try again</button>
+        <button onclick="solveCard('%CARDID%', '%USERID%', 'failed')">Not solved</button>
     </div>
 </div>
