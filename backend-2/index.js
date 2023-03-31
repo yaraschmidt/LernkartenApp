@@ -145,10 +145,14 @@ server.get("/cards/nextForUser/:id", async (req, res) => {
     if(id == undefined ) return res.sendStatus(400);
     cardCollection.findOne({
         $or : [
-            { user : { $all : [ { "$elemMatch" : { userId : { $ne : oid } } },
-                                { "$elemMatch" : { kind   : { $ne : 'solved'}} }
-        ]} },
-            { user : { $eq : [] } }
+            { user : { $eq : [] } },
+            { user : 
+                { $not : {
+                    "$elemMatch" : {
+                        userId : oid ,
+                        kind : 'solved'
+                    }
+            } } }
         ]
     })
         .then(val => console.log(val))

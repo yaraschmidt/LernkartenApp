@@ -126,7 +126,6 @@ app.post("/cards", async function(req, res) {
 
 app.post("/cards/solve", async function(req, res) {
     const {cardId, userId, answerKind} = req.body;
-    console.log(req.body, cardId, userId, answerKind);
     if(cardId == undefined || userId == undefined) return res.sendStatus(400);
     const user = await userDocuments.findOne({_id : new ObjectId(userId)});
     if(!user) return res.sendStatus(403);
@@ -140,10 +139,14 @@ app.get("/cards/nextForUser/:id", async function(req, res) {
     const oid = new ObjectId(id);
     const card = await cardDocuments.findOne({
         $or : [
-            { user : { $all : [ { "$elemMatch" : { userId : { $ne : oid } } },
-                                { "$elemMatch" : { kind   : { $ne : 'solved'}} }
-        ]} },
-            { user : { $eq : [] } }
+            { user : { $eq : [] } },
+            { user : 
+                { $not : {
+                    "$elemMatch" : {
+                        userId : oid ,
+                        kind : 'solved'
+                    }
+            } } }
         ]
     });
     res.json(processCard(card));
