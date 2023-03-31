@@ -1,6 +1,10 @@
+// ####################################### 1
+
 let HTML_TEMPLATE = "";
 
 const backendAPI = "http://localhost:3000";
+
+// ####################################### 7
 
 function solveCard(cardId, userId, kind){
     const body = {
@@ -43,6 +47,8 @@ function showBack(){
     backSide.style.display = "flex";
 }
 
+// ####################################### 1
+
 window.addEventListener("hashchange", func);
 window.addEventListener("load", func);
 
@@ -51,9 +57,9 @@ async function func(){
     const contentDiv = document.getElementById("content");
     contentDiv.innerHTML = "";
     
-    console.log(location.hash);
-    console.log(pageSplit);
+    
     switch (pageSplit[0]) {
+        // ####################################### 2
         case "users":
             await fetch("./templates/users.html")
                 .then(resp => resp.text())
@@ -83,6 +89,7 @@ async function func(){
 
             break;
     
+        // ####################################### 3
         case "user":
             await fetch("./templates/user.html")
                 .then(resp => resp.text())
@@ -134,6 +141,7 @@ async function func(){
 
             break;
             
+            // ####################################### 4
             case "cards":
                 await fetch("./templates/cards.html")
                     .then(resp => resp.text())
@@ -163,6 +171,7 @@ async function func(){
 
                 break;
 
+        // ####################################### 5
         case "card":
             await fetch("./templates/card.html")
             .then(resp => resp.text())
@@ -211,6 +220,7 @@ async function func(){
             contentDiv.appendChild(cardForm);
             break;
 
+        // ####################################### 6
         case "learn":
             if(pageSplit[1]){
                 let user;
@@ -243,4 +253,4 @@ async function func(){
         default:
             break;
     }
-};
+}; // ####################################### 1

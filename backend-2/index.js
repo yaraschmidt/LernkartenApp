@@ -1,3 +1,6 @@
+// ####################################### 0
+
+// ####################################### 1
 import express from "express";
 import cors from "cors";
 import { connect } from "./db.js";
@@ -6,6 +9,11 @@ import { ObjectId } from "mongodb";
 const [userCollection, cardCollection] = await connect();
 const server = express();
 const baseUrl = "http://localhost:3000";
+
+server.use(express.json());
+server.use(cors());
+
+// ####################################### 5
 
 function processUser(user){
     if(!user) return user;
@@ -39,8 +47,7 @@ function processCard(card){
     return card
 }
 
-server.use(express.json());
-server.use(cors());
+// ####################################### 3
 
 server.get("/user", async (req, res) => {
     userCollection.find({}).toArray()
@@ -96,6 +103,8 @@ server.delete("/user/:id", (req, res) => {
         .then(resp => (resp.acknowledged && resp.deletedCount == 1) ? 200 : 404 )
         .then(code => res.sendStatus(code));
 });
+
+// ####################################### 4
 
 server.get("/cards", (req, res) => {
     cardCollection.find({}).toArray()
@@ -184,7 +193,7 @@ server.delete("/cards/:id", (req, res) => {
 });
 
 
-
+// ####################################### 1
 server.listen(3000, "0.0.0.0", () => {
     console.log("Server gestartet!");
 });

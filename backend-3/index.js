@@ -1,3 +1,11 @@
+// ####################################### 0
+
+// commit package-lock.json
+// commit package.json
+
+
+// ####################################### 1
+
 import express from "express";
 import cors from "cors";
 import { MongoClient, ObjectId } from "mongodb";
@@ -14,6 +22,11 @@ const cardDocuments = db.collection( process.env.MONGODB_COLLECTION_USER_CARDS )
 const app = express();
 const baseUrl = "http://localhost:3000";
 
+app.use(express.json());
+app.use(cors());
+
+// ####################################### 4
+
 function processUser(user){
     if(!user) return user;
     user.links = {
@@ -26,6 +39,8 @@ function processUser(user){
     }
     return user;
 }
+
+// ####################################### 5
 
 function processCard(card){
     if(!card)
@@ -45,8 +60,7 @@ function processCard(card){
     return card
 }
 
-app.use(express.json());
-app.use(cors());
+// ####################################### 2
 
 app.get("/user", async function(_, res){
     const arr = await userDocuments.find({}).toArray()
@@ -97,6 +111,8 @@ app.delete("/user/:id", async function(req, res) {
         res.sendStatus(404);
     }
 });
+
+// ####################################### 3
 
 app.get("/cards", async function(_, res) {
     const arr = await cardDocuments.find({}).toArray();
@@ -179,6 +195,8 @@ app.delete("/cards/:id", async function(req, res) {
         res.sendStatus(403);
     }
 });
+
+// ####################################### 1
 
 app.listen(3000, "0.0.0.0", function() {
     console.log("Server gestartet!");
