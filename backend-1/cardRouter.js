@@ -7,6 +7,7 @@ import { collections } from "./backend.js";
 const baseUrl = "http://localhost:3000/cards"
 
 function insertHateoasLinks(card){
+    // Abfangen, dass, falls beispielsweise keine Karte existiert, trotzdem die Funktionen ausgeführt werden können
     if(!card)
         return { links :{
                 create : { url : baseUrl, method : "POST" },
@@ -27,6 +28,7 @@ function insertHateoasLinks(card){
 
 export const cardRouter = express.Router();
 
+// gibt alle Lernkarten zurück
 cardRouter.get("/", async (req, res) => {
     collections.cardCollection.find({}).toArray()
         .then(arr => res.json(
@@ -34,6 +36,7 @@ cardRouter.get("/", async (req, res) => {
         ))
 });
 
+// gibt eine einzelne Karte zurück
 cardRouter.get("/:id", async (req, res) => {
     const {id} = req.params;
     console.log(id);
@@ -42,9 +45,11 @@ cardRouter.get("/:id", async (req, res) => {
         .then(val => res.json(insertHateoasLinks(val)));
 });
 
+// gibt an, wie die Karte gelöst wurde (ja, nein, halb)
 cardRouter.post("/solve", async (req, res) => {
     const { cardId, userId, kind } = req.body;
     if(!cardId || !userId) return res.sendStatus(400);
+    // fügt neues Userobjekt in Array von Karteneigenschaft User ein, da Karte bearbeitet wurde, Status von Lösung der Karte passt sich an  
     collections.userCollection.findOne({_id : new ObjectId(userId)})
         .then(val => {
             if(!val) return res.sendStatus(401);
@@ -53,12 +58,16 @@ cardRouter.post("/solve", async (req, res) => {
         });
 });
 
+// gibt Lernkarte in die zu lernende Sammlung zurück
 cardRouter.get("/nextForUser/:id", (req, res) => {
     const { id } = req.params;
     if(!id) return res.sendStatus(400);
     collections.cardCollection.findOne({
+        // gibt Lernkarte zurück unter 2 Bedingungen:
         $or : [
+            // 1. kein user hat Lernkarte angeschaut
             { user : { $eq : [] } },
+            // 2. User hat Lerkarte noch nicht gesolved
             { user : 
                 { $not : {
                     "$elemMatch" : {
@@ -70,6 +79,7 @@ cardRouter.get("/nextForUser/:id", (req, res) => {
     }).then(val => res.json(insertHateoasLinks(val)));
 });
 
+// erstellt neue Lernkarte
 cardRouter.post("/", async (req, res) => {
     const {question, answer, color} = req.body;
     if(!question || !answer || !color) return res.sendStatus(404);
@@ -86,6 +96,7 @@ cardRouter.post("/", async (req, res) => {
     })));
 });
 
+// updated Lernkarte
 cardRouter.put("/", async (req, res) => {
     const {_id, question, answer, color} = req.body;
     if(!_id || !question || !answer ) return res.sendStatus(404);
@@ -101,6 +112,7 @@ cardRouter.put("/", async (req, res) => {
     })));
 });
 
+// löscht Karte
 cardRouter.delete("/:id", async (req, res) => {
     const {id} = req.params;
     if(!id) return res.sendStatus(400);

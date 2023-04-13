@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   title: Lernkarten
   description: "Die Lernkarten App ermöglicht das userabhängige Lernen\
-  \ von eigen erstellten Lernkarten. Ein User besteht aus einem Name,\
-  \ einem Alter und einer Anzeigefarbe. Die Lernkarten haben eine Frage,\
+  \ von selbst erstellten Lernkarten. Ein User besteht aus einem Namen,\
+  \ dem Alter und einer Anzeigefarbe. Die Lernkarten beinhalten eine Frage,\
   \ eine Antwort und eine Hintergrundfarbe. Die App basiert auf einem\
   \ REST-Service, welcher das Erstellen, Bearbeiten und Löschen von \
   \ Lernkarten und Usern ermöglicht."
@@ -234,6 +234,7 @@ paths:
 
 components:
   schemas:
+  // ...
     HATEOAS_Response:
       title: Antworten im HATEOAS Format 
       type: object
@@ -256,9 +257,11 @@ components:
         method:
           type: string
 
+    // Entitäten
     User:
       title: User
       type: object
+      // Eigenschaften
       properties:
         _links:
           $ref: '#/components/schemas/HATEOAS_Response'
@@ -295,13 +298,14 @@ components:
         color: 
           type: string
           pattern: "(#[1-9abcdef]{6})?"
+        // Array zu Benutzern, denen die Karte zugewiesen ist
         user:
           type: array
           items:
             $ref: '#/components/schemas/User'
       required:
-        - name
-        - age
+        - title
+        - answer
       example:
         _id: "398039u34r830r93ß038r3ß4r83i"
         title: "Hauptstadt Deutschland"

@@ -6,6 +6,7 @@ const backendAPI = "http://localhost:3000";
 
 // ####################################### 7
 
+// lösen von Karten
 function solveCard(cardId, userId, kind){
     const body = {
         "userId" : userId,
@@ -22,6 +23,7 @@ function solveCard(cardId, userId, kind){
     .then(() => route("learn/" + userId));
 }
 
+// löschen von Karte
 function deleteCard(cardId){
     fetch(backendAPI + "/cards/" + cardId,{
         method: "DELETE"
@@ -29,6 +31,7 @@ function deleteCard(cardId){
     .then(() => route('cards'));
 }
 
+// löschen von User
 function deleteUser(userId){
     fetch(backendAPI + "/user/" + userId,{
         method : "DELETE"
@@ -36,12 +39,14 @@ function deleteUser(userId){
     .then(() => route('users'));
 }
 
+// führt zu passender Seite
 function route (target) {
     if(window.location.hash === "#" + target) return window.location.reload();
     window.location.href = "./#" + target;
     // window.location.reload(true);
 }
 
+// zeigt Rückseite der Karte
 function showBack(){
     const backSide = document.getElementsByClassName("back")[0];
     backSide.style.display = "flex";
@@ -52,6 +57,7 @@ function showBack(){
 window.addEventListener("hashchange", func);
 window.addEventListener("load", func);
 
+// routing
 async function func(){
     const pageSplit = location.hash.slice(1).split("/");
     const contentDiv = document.getElementById("content");
@@ -61,6 +67,7 @@ async function func(){
     switch (pageSplit[0]) {
         // ####################################### 2
         case "users":
+            // holt template und wartet bis Funktionen ausgeführt werden
             await fetch("./templates/users.html")
                 .then(resp => resp.text())
                 .then(text => {HTML_TEMPLATE = text});
@@ -69,11 +76,14 @@ async function func(){
             const userListDiv = document.createElement("div");
             userListDiv.classList.add("list")
 
+            // holt user aus Backend, bringt es in json Format
             fetch(backendAPI + "/user")
                 .then(user => user.json())
+                // für jeden User holt es sich HTML template aus user.html 
                 .then(arr => arr.forEach(user => {
                     let html = HTML_TEMPLATE;
 
+                    // replaced Placeholder aus datei mit aus Backend gefetchten Daten
                     html = html.replace(/%NAME%/g, user["name"]);
                     html = html.replace(/%AGE%/g, user["age"]);
                     html = html.replace(/%COLOR%/g, user["color"]);
@@ -81,6 +91,7 @@ async function func(){
                     userListDiv.innerHTML += html;
                 }));
 
+                // baut restliche UI
                 const createUserButton = document.createElement("button");
                 createUserButton.onclick = () => route('user');
                 createUserButton.innerText = "Create User"
@@ -98,12 +109,14 @@ async function func(){
             const userForm = document.createElement("form");
             
             var html     = HTML_TEMPLATE;
+            // schaut, ob User gerade erstellt oder editiert wird
             var isUpdate = pageSplit.length > 1;
             var user = {
                 "name" : "",
                 "age" : 0,
                 "color" : "#ffffff"
             }
+            // wenn editiert, dann gib user zurück
             if(isUpdate){
                 await fetch(backendAPI + "/user/" + pageSplit[1])
                 .then(resp => (resp.ok) ? resp.json() : user )
@@ -117,13 +130,16 @@ async function func(){
             
             userForm.innerHTML = html;
             userForm.addEventListener("submit", async (e) => {
+                // eventlistener, falls user gespeichert wird
                 e.preventDefault();
+                // speichern von userinformationen
                 const body = {
                     _id : pageSplit[1],
                     name : e.target.name.value,
                     age : e.target.age.value,
                     color : e.target.color.value
                 };
+                // speichert/aktualisiert (je nach anlegen/updaten) User im Backend
                 await fetch(backendAPI + "/user/", {
                     method : (isUpdate) ? 'PUT' : 'POST',
                     headers : {
@@ -132,9 +148,11 @@ async function func(){
                     body : JSON.stringify(body)
                 })
                 
+                // auf userliste zurück routen
                 route('users');
             });
             contentDiv.appendChild(userForm);
+            // löschfunktion
             document.getElementById("deleteUser").addEventListener('click', () => {
                 deleteUser(user._id);
             })
@@ -224,16 +242,19 @@ async function func(){
         case "learn":
             if(pageSplit[1]){
                 let user;
+                // holt user mit id aus path mit pageSplit
                 await fetch(backendAPI + "/user/" + pageSplit[1])
                     .then(resp => resp.json())
                     .then(u => {user = u});
                     
                 if(user){
                     let card;
+                    // holt Karte mit Lösung
                     await fetch(user.links.nextCard.url)
                         .then(resp => resp.json())
                         .then(c => {card = c});
                     if(card._id){
+                        // baut Layout der Lösungsseite mit Daten aus learn.html
                         await fetch("./templates/learn.html")
                             .then(resp => resp.text())
                             .then(text => {HTML_TEMPLATE = text});
