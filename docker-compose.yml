@@ -35,9 +35,9 @@ services:
       - 3000:3000
       - 9229:9229
     volumes:
-        # - ./backend-1:/app
-        # - ./backend-2:/app
-        - ./backend-3:/app
+        # - ./backend-yara:/app
+        # - ./backend-doreen:/app
+        - ./backend-helena:/app
     working_dir: /app
     command: sh -c "npm i; npm start"
   
